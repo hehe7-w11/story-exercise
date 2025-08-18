@@ -55,6 +55,17 @@ class CalculatorTest {
     }
 
     @Test
+    void test_multiply_with_two_equal_number() {
+        // given
+        int a = 100;
+        int b = 100;
+
+        // when/then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Calculator().multiply(a, b));
+        assertEquals("2 params must not be equal", exception.getMessage());
+    }
+
+    @Test
     void test_multiply_with_large_number() {
         // Given
         long a = Integer.MAX_VALUE;
