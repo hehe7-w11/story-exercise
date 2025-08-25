@@ -3,17 +3,21 @@ package Story1;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParkingLotTest {
     @Test
     public void test_park_car(){
         String carId = UUID.randomUUID().toString();
         Car car = new Car(carId);
-        ParkingLot parkingLot = new ParkingLot();
+        String[] carIds = {};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        ParkingLot parkingLot = new ParkingLot(0, carSet);
         Ticket ticket = parkingLot.park(car);
 //        System.out.println(ticket.toString());
         assertNotNull(ticket);
@@ -21,11 +25,24 @@ public class ParkingLotTest {
 
     @Test
     public void test_fetch_car(){
+        String[] carIds = {"100", "200", "300", "400"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         String carId = "100";
         Car car = new Car(carId);
         Ticket ticket = new Ticket("100", false, car);
-        ParkingLot parkingLot = new ParkingLot();
-        Car fetchCar = parkingLot.fetch(ticket);
+        ParkingLot parkingLot = new ParkingLot(0, carSet);
+        System.out.println(parkingLot.getCarSet());
+        Car fetchCar = parkingLot.fetch(ticket, parkingLot.getCarSet());
         assertNotNull(fetchCar);
+    }
+
+    @Test
+    public void test_wrong_ticket(){
+        String[] carIds = {"100", "200", "300", "400"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        ParkingLot parkingLot = new ParkingLot(10, carSet);
+        Ticket ticket = new Ticket("150", false, new Car("150"));
+        Car fetchCar = parkingLot.fetch(ticket, parkingLot.getCarSet());
+        assertNull(fetchCar);
     }
 }
