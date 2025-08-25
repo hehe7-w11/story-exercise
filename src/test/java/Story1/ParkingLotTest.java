@@ -86,8 +86,8 @@ public class ParkingLotTest {
         List<ParkingLot> parkingLotList = new ArrayList<>();
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         parkingLotList.add(parkingLot);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, false);
-        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getClever());
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, 0);
+        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getBoyState());
         assertNotNull(ticket);
         assertEquals(oldSize + 1, parkingLot.getCarSet().size());
     }
@@ -102,7 +102,7 @@ public class ParkingLotTest {
         Ticket ticket = new Ticket("100", false, car);
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         List<ParkingLot> parkingLotList = Arrays.asList(parkingLot);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, false);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, 0);
         Car fetchCar = parkingBoy.fetch(ticket, parkingBoy.getParkingLotList());
         assertNotNull(fetchCar);
         assertEquals(oldSize - 1, parkingLot.getCarSet().size());
@@ -120,8 +120,8 @@ public class ParkingLotTest {
         ParkingLot parkingLot1 = new ParkingLot(10 - carSet1.size(), carSet1);
         ParkingLot parkingLot2 = new ParkingLot(10 - carSet2.size(), carSet2);
         List<ParkingLot> parkingLotList = Arrays.asList(parkingLot1, parkingLot2);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, false);
-        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getClever());
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, 0);
+        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getBoyState());
         assertNotNull(ticket);
         assertEquals(oldSize + 1, parkingLot2.getCarSet().size());
     }
@@ -141,10 +141,34 @@ public class ParkingLotTest {
         ParkingLot parkingLot2 = new ParkingLot(10 - carSet2.size(), carSet2);
         ParkingLot parkingLot3 = new ParkingLot(10 - carSet2.size(), carSet3);
         List<ParkingLot> parkingLotList = Arrays.asList(parkingLot1, parkingLot2, parkingLot3);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, true);
-        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getClever());
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, 1);
+        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getBoyState());
         assertNotNull(ticket);
         assertEquals(oldSize + 1, parkingLot2.getCarSet().size());
     }
+
+    @Test
+    public void test_super_boy_park_car() throws NoAvaialblePositionException {
+        String carId = UUID.randomUUID().toString();
+        Car car = new Car(carId);
+        String[] carIds1 = {"100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"};
+        Set<String> carSet1 = new HashSet<>(Arrays.asList(carIds1));
+        String[] carIds2 = {"100", "200", "300"};
+        Set<String> carSet2 = new HashSet<>(Arrays.asList(carIds2));
+        int oldSize = carSet2.size();
+        String[] carIds3 = {"100", "200", "300", "400", "500", "600"};
+        Set<String> carSet3 = new HashSet<>(Arrays.asList(carIds3));
+        ParkingLot parkingLot1 = new ParkingLot(10 - carSet1.size(), carSet1);
+        ParkingLot parkingLot2 = new ParkingLot(10 - carSet2.size(), carSet2);
+        ParkingLot parkingLot3 = new ParkingLot(10 - carSet2.size(), carSet3);
+        List<ParkingLot> parkingLotList = Arrays.asList(parkingLot1, parkingLot2, parkingLot3);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList, 2);
+        Ticket ticket = parkingBoy.park(parkingBoy.getParkingLotList(), car, parkingBoy.getBoyState());
+        assertNotNull(ticket);
+        assertEquals(oldSize + 1, parkingLot2.getCarSet().size());
+    }
+
+
+
 
 }

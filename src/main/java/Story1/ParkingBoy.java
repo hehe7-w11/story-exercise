@@ -9,7 +9,7 @@ import java.util.Optional;
 public class ParkingBoy {
 
     private List<ParkingLot> parkingLotList;
-    private Boolean isClever;
+    private Integer boyState; // 0：not clever, 1: clever, 2: super
 
     public List<ParkingLot> getParkingLotList() {
         return parkingLotList;
@@ -19,36 +19,54 @@ public class ParkingBoy {
         this.parkingLotList = parkingLotList;
     }
 
-
-    public Boolean getClever() {
-        return isClever;
+    public Integer getBoyState() {
+        return boyState;
     }
 
-    public void setClever(Boolean clever) {
-        isClever = clever;
+    public void setBoyState(Integer boyState) {
+        this.boyState = boyState;
     }
 
 
-    public ParkingBoy(List<ParkingLot> parkingLotList, Boolean isClever) {
+
+    public ParkingBoy(List<ParkingLot> parkingLotList, Integer boyState) {
         this.parkingLotList = parkingLotList;
-        this.isClever = isClever;
+        this.boyState = boyState;
     }
 
 
-    public Ticket park(List<ParkingLot> parkingLotList, Car car, Boolean isClever) throws NoAvaialblePositionException {
-        if (!isClever) {
-            for (ParkingLot parkingLot : parkingLotList) {
-                if (parkingLot.getCapacity() > 0) {
-                    return parkingLot.park(car);
+    public Ticket park(List<ParkingLot> parkingLotList, Car car, int boyState) throws NoAvaialblePositionException {
+        switch (boyState) {
+            case 0: {
+                for (ParkingLot parkingLot : parkingLotList) {
+                    if (parkingLot.getCapacity() > 0) {
+                        return parkingLot.park(car);
+                    }
                 }
             }
-        } else {
-            Optional<ParkingLot> optionalParkingLot = parkingLotList.stream()
-                    .max(Comparator.comparingInt(ParkingLot::getCapacity));
-            if (optionalParkingLot.isPresent()) {
-                ParkingLot parkingLot = optionalParkingLot.get();
-                if (parkingLot.getCapacity() > 0) {
-                    return parkingLot.park(car);
+            case 1: {
+                Optional<ParkingLot> optionalParkingLot = parkingLotList.stream()
+                        .max(Comparator.comparingInt(ParkingLot::getCapacity));
+                if (optionalParkingLot.isPresent()) {
+                    ParkingLot parkingLot = optionalParkingLot.get();
+                    if (parkingLot.getCapacity() > 0) {
+                        return parkingLot.park(car);
+                    }
+                }
+            }
+            case 2: {
+                Optional<ParkingLot> optionalParkingLot = parkingLotList.stream()
+                        .max(Comparator.comparingDouble(lot -> {
+                            int parkedCars = lot.getCarSet().size();
+                            int total = lot.getCapacity() + parkedCars;
+                            // 避免除以0（容量为0且无车的情况）
+                            return total == 0 ? 0.0 : (double) lot.getCapacity() / total;
+                        }));
+                if (optionalParkingLot.isPresent()) {
+                    ParkingLot parkingLot = optionalParkingLot.get();
+                    if (parkingLot.getCapacity() > 0) {
+                        return parkingLot.park(car);
+                    }
                 }
             }
         }
