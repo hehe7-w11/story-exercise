@@ -40,7 +40,7 @@ public class ParkingLotTest {
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = new Ticket("150", false, new Car("150"));
-        NullPointerException exception = assertThrows(NullPointerException.class, () ->  parkingLot.fetch(ticket, parkingLot));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(ticket, parkingLot));
         assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
@@ -49,8 +49,8 @@ public class ParkingLotTest {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        Car fetchCar = parkingLot.fetch(null, parkingLot);
-        assertNull(fetchCar);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(null, parkingLot));
+        assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
     @Test
@@ -58,8 +58,9 @@ public class ParkingLotTest {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        Car fetchCar = parkingLot.fetch(null, parkingLot);
-        assertNull(fetchCar);
+        Ticket ticket = new Ticket("100", true, new Car("100"));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(ticket, parkingLot));
+        assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
     @Test
