@@ -29,6 +29,9 @@ public class ParkingLot {
     }
 
     public Ticket park(Car car) {
+        if(this.capacity == 0){
+            return null;
+        }
         this.capacity--;
         return new Ticket(car.getId(), false, car);
     }

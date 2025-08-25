@@ -58,8 +58,18 @@ public class ParkingLotTest {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        Ticket ticket = new Ticket("100", true, new Car("100"));
         Car fetchCar = parkingLot.fetch(null, parkingLot);
         assertNull(fetchCar);
+    }
+
+    @Test
+    public void test_park_car_without_position() {
+        String[] carIds = {"100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        String carId = UUID.randomUUID().toString();
+        Car car = new Car(carId);
+        Ticket ticket = parkingLot.park(car);
+        assertNull(ticket);
     }
 }
