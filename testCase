@@ -9,3 +9,7 @@ Story1:
 Story2:
 1. Given 停车场、错误ticket，When 取车， Then 报错信息"Unrecognized parking ticket."
 2. Given 停车场（容量为0）、车，When 停车，Then 报错信息"No available position."
+
+Story3:
+1. Given 停车场（10个位）、车、parkingBoy，When 停车， Then 获取ticket
+2. Given 停车场、ticket、parkingBoy，When 取车，Then 车

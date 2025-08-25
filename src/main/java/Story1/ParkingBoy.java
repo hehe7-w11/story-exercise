@@ -2,27 +2,41 @@ package Story1;
 
 import UserDefinedException.NoAvaialblePositionException;
 
+import java.util.List;
+
 public class ParkingBoy {
-    private ParkingLot parkingLot;
 
-    public ParkingBoy(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
+    private List<ParkingLot> parkingLotList;
+
+    public List<ParkingLot> getParkingLotList() {
+        return parkingLotList;
     }
 
-    public ParkingLot getParkingLot() {
-        return parkingLot;
+    public void setParkingLotList(List<ParkingLot> parkingLotList) {
+        this.parkingLotList = parkingLotList;
     }
 
-    public void setParkingLot(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
-    }
-
-    public Ticket park(ParkingLot parkingLot, Car car) throws NoAvaialblePositionException {
-        return parkingLot.park(car);
+    public ParkingBoy(List<ParkingLot> parkingLotList) {
+        this.parkingLotList = parkingLotList;
     }
 
 
-    public Car fetch(Ticket ticket, ParkingLot parkingLot) {
-        return parkingLot.fetch(ticket, parkingLot);
+    public Ticket park(List<ParkingLot> parkingLotList, Car car) throws NoAvaialblePositionException {
+        for(ParkingLot parkingLot : parkingLotList){
+            if(parkingLot.getCapacity() > 0){
+               return parkingLot.park(car);
+            }
+        }
+        return null;
+    }
+
+
+    public Car fetch(Ticket ticket, List<ParkingLot> parkingLotList) {
+        for(ParkingLot parkingLot : parkingLotList){
+            if(parkingLot.getCarSet().contains(ticket.getCar().getId())){
+                return parkingLot.fetch(ticket, parkingLot);
+            }
+        }
+        return null;
     }
 }

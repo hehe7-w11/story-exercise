@@ -4,10 +4,7 @@ package Story1;
 import UserDefinedException.NoAvaialblePositionException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +19,7 @@ public class ParkingLotTest {
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = parkingLot.park(car);
         assertNotNull(ticket);
-        assertEquals(oldSize + 1,parkingLot.getCarSet().size());
+        assertEquals(oldSize + 1, parkingLot.getCarSet().size());
     }
 
     @Test
@@ -36,7 +33,7 @@ public class ParkingLotTest {
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Car fetchCar = parkingLot.fetch(ticket, parkingLot);
         assertNotNull(fetchCar);
-        assertEquals(oldSize - 1,parkingLot.getCarSet().size());
+        assertEquals(oldSize - 1, parkingLot.getCarSet().size());
     }
 
     @Test
@@ -45,7 +42,7 @@ public class ParkingLotTest {
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = new Ticket("150", false, new Car("150"));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(ticket, parkingLot));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parkingLot.fetch(ticket, parkingLot));
         assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
@@ -54,7 +51,7 @@ public class ParkingLotTest {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(null, parkingLot));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parkingLot.fetch(null, parkingLot));
         assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
@@ -64,7 +61,7 @@ public class ParkingLotTest {
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = new Ticket("100", true, new Car("100"));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->  parkingLot.fetch(ticket, parkingLot));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> parkingLot.fetch(ticket, parkingLot));
         assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
@@ -75,7 +72,7 @@ public class ParkingLotTest {
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         String carId = UUID.randomUUID().toString();
         Car car = new Car(carId);
-        NoAvaialblePositionException exception = assertThrows(NoAvaialblePositionException.class, () ->  parkingLot.park(car));
+        NoAvaialblePositionException exception = assertThrows(NoAvaialblePositionException.class, () -> parkingLot.park(car));
         assertEquals("No available position.", exception.getMessage());
     }
 
@@ -86,9 +83,11 @@ public class ParkingLotTest {
         String[] carIds = {};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         int oldSize = carSet.size();
+        List<ParkingLot> parkingLotList = new ArrayList<>();
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
-        Ticket ticket = parkingBoy.park(parkingLot, car);
+        parkingLotList.add(parkingLot);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList);
+        Ticket ticket = parkingBoy.park(parkingLotList, car);
         assertNotNull(ticket);
         assertEquals(oldSize + 1, parkingLot.getCarSet().size());
     }
@@ -102,10 +101,29 @@ public class ParkingLotTest {
         Car car = new Car(carId);
         Ticket ticket = new Ticket("100", false, car);
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
-        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
-        Car fetchCar = parkingBoy.fetch(ticket, parkingLot);
+        List<ParkingLot> parkingLotList = Arrays.asList(parkingLot);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList);
+        Car fetchCar = parkingBoy.fetch(ticket, parkingBoy.getParkingLotList());
         assertNotNull(fetchCar);
         assertEquals(oldSize - 1, parkingLot.getCarSet().size());
+    }
+
+    @Test
+    public void test_not_clever_boy_park_car() throws NoAvaialblePositionException {
+        String carId = UUID.randomUUID().toString();
+        Car car = new Car(carId);
+        String[] carIds1 = {"100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"};
+        Set<String> carSet1 = new HashSet<>(Arrays.asList(carIds1));
+        String[] carIds2 = {};
+        Set<String> carSet2 = new HashSet<>(Arrays.asList(carIds2));
+        int oldSize = carSet2.size();
+        ParkingLot parkingLot1 = new ParkingLot(10 - carSet1.size(), carSet1);
+        ParkingLot parkingLot2 = new ParkingLot(10 - carSet2.size(), carSet2);
+        List<ParkingLot> parkingLotList = Arrays.asList(parkingLot1, parkingLot2);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLotList);
+        Ticket ticket = parkingBoy.park(parkingLotList, car);
+        assertNotNull(ticket);
+        assertEquals(oldSize + 1, parkingLot2.getCarSet().size());
     }
 
 }
