@@ -40,8 +40,8 @@ public class ParkingLotTest {
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = new Ticket("150", false, new Car("150"));
-        Car fetchCar = parkingLot.fetch(ticket, parkingLot);
-        assertNull(fetchCar);
+        NullPointerException exception = assertThrows(NullPointerException.class, () ->  parkingLot.fetch(ticket, parkingLot));
+        assertEquals("Unrecognized parking ticket.", exception.getMessage());
     }
 
     @Test

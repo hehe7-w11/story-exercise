@@ -37,8 +37,11 @@ public class ParkingLot {
     }
 
     public Car fetch(Ticket ticket, ParkingLot parkingLot) {
-        if (ticket == null || ticket.getUsed() || !parkingLot.getCarSet().contains(ticket.getCar().getId())) {
+        if (ticket == null || ticket.getUsed()) {
             return null;
+        }
+        if (!parkingLot.getCarSet().contains(ticket.getCar().getId())){
+            throw new NullPointerException("Unrecognized parking ticket.");
         }
         this.capacity++;
         ticket.setUsed(true);

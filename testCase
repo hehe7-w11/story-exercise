@@ -6,5 +6,6 @@ Story1:
 5. Given 停车场、使用状态used ticket，When 取车， Then 取车为null（或报错）
 6. Given 停车场（容量为0）、车，When 停车，Then ticket返回null、报错
 
-parkingLot: int[10]
-ticket: Map<id, isUsed>
+Story2:
+1. Given 停车场、错误ticket，When 取车， Then 报错信息"Unrecognized parking ticket."
+2. Given 停车场（容量为0）、车，When 停车，Then 报错信息"No available position."
