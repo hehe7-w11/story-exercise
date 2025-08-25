@@ -1,6 +1,7 @@
 package Story1;
 
 
+import UserDefinedException.NoAvaialblePositionException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -12,26 +13,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ParkingLotTest {
     @Test
-    public void test_park_car() {
+    public void test_park_car() throws NoAvaialblePositionException {
         String carId = UUID.randomUUID().toString();
         Car car = new Car(carId);
         String[] carIds = {};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        int oldSize = carSet.size();
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = parkingLot.park(car);
         assertNotNull(ticket);
+        assertEquals(oldSize + 1,parkingLot.getCarSet().size());
     }
 
     @Test
     public void test_fetch_car() {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        int oldSize = carSet.size();
         String carId = "100";
         Car car = new Car(carId);
         Ticket ticket = new Ticket("100", false, car);
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Car fetchCar = parkingLot.fetch(ticket, parkingLot);
         assertNotNull(fetchCar);
+        assertEquals(oldSize - 1,parkingLot.getCarSet().size());
     }
 
     @Test
@@ -70,7 +75,37 @@ public class ParkingLotTest {
         ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         String carId = UUID.randomUUID().toString();
         Car car = new Car(carId);
-        Ticket ticket = parkingLot.park(car);
-        assertNull(ticket);
+        NoAvaialblePositionException exception = assertThrows(NoAvaialblePositionException.class, () ->  parkingLot.park(car));
+        assertEquals("No available position.", exception.getMessage());
     }
+
+    @Test
+    public void test_boy_park_car() throws NoAvaialblePositionException {
+        String carId = UUID.randomUUID().toString();
+        Car car = new Car(carId);
+        String[] carIds = {};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        int oldSize = carSet.size();
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+        Ticket ticket = parkingBoy.park(parkingLot, car);
+        assertNotNull(ticket);
+        assertEquals(oldSize + 1, parkingLot.getCarSet().size());
+    }
+
+    @Test
+    public void test_boy_fetch_car() {
+        String[] carIds = {"100", "200", "300", "400"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        int oldSize = carSet.size();
+        String carId = "100";
+        Car car = new Car(carId);
+        Ticket ticket = new Ticket("100", false, car);
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+        Car fetchCar = parkingBoy.fetch(ticket, parkingLot);
+        assertNotNull(fetchCar);
+        assertEquals(oldSize - 1, parkingLot.getCarSet().size());
+    }
+
 }
