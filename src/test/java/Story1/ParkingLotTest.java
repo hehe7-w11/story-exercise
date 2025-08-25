@@ -12,37 +12,54 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ParkingLotTest {
     @Test
-    public void test_park_car(){
+    public void test_park_car() {
         String carId = UUID.randomUUID().toString();
         Car car = new Car(carId);
         String[] carIds = {};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
-        ParkingLot parkingLot = new ParkingLot(0, carSet);
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = parkingLot.park(car);
-//        System.out.println(ticket.toString());
         assertNotNull(ticket);
     }
 
     @Test
-    public void test_fetch_car(){
+    public void test_fetch_car() {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
         String carId = "100";
         Car car = new Car(carId);
         Ticket ticket = new Ticket("100", false, car);
-        ParkingLot parkingLot = new ParkingLot(0, carSet);
-        System.out.println(parkingLot.getCarSet());
-        Car fetchCar = parkingLot.fetch(ticket, parkingLot.getCarSet());
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        Car fetchCar = parkingLot.fetch(ticket, parkingLot);
         assertNotNull(fetchCar);
     }
 
     @Test
-    public void test_wrong_ticket(){
+    public void test_wrong_ticket() {
         String[] carIds = {"100", "200", "300", "400"};
         Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
-        ParkingLot parkingLot = new ParkingLot(10, carSet);
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
         Ticket ticket = new Ticket("150", false, new Car("150"));
-        Car fetchCar = parkingLot.fetch(ticket, parkingLot.getCarSet());
+        Car fetchCar = parkingLot.fetch(ticket, parkingLot);
+        assertNull(fetchCar);
+    }
+
+    @Test
+    public void test_null_ticket() {
+        String[] carIds = {"100", "200", "300", "400"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        Car fetchCar = parkingLot.fetch(null, parkingLot);
+        assertNull(fetchCar);
+    }
+
+    @Test
+    public void test_used_ticket() {
+        String[] carIds = {"100", "200", "300", "400"};
+        Set<String> carSet = new HashSet<>(Arrays.asList(carIds));
+        ParkingLot parkingLot = new ParkingLot(10 - carSet.size(), carSet);
+        Ticket ticket = new Ticket("100", true, new Car("100"));
+        Car fetchCar = parkingLot.fetch(null, parkingLot);
         assertNull(fetchCar);
     }
 }

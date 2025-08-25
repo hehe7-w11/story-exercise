@@ -1,8 +1,6 @@
 package Story1;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class ParkingLot {
     private Integer capacity;
@@ -35,12 +33,13 @@ public class ParkingLot {
         return new Ticket(car.getId(), false, car);
     }
 
-    public Car fetch(Ticket ticket, Set<String> carSet) {
-        if (!carSet.contains(ticket.getCar().getId())) {
+    public Car fetch(Ticket ticket, ParkingLot parkingLot) {
+        if (ticket == null || ticket.getUsed() || !parkingLot.getCarSet().contains(ticket.getCar().getId())) {
             return null;
         }
         this.capacity++;
         ticket.setUsed(true);
+        parkingLot.getCarSet().remove(ticket.getCar().getId());
         return ticket.getCar();
     }
 }
